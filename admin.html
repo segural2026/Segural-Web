@@ -7,154 +7,73 @@
 
   <style>
     :root{
-      --bg:#ffffff;
-      --muted:#f4f6f8;
-      --text:#101828;
-      --sub:#475467;
-      --line:#e4e7ec;
-      --blue:#2b6cb0;
-      --blue2:#0b63ce;
-      --shadow:0 10px 30px rgba(16,24,40,.08);
-      --r:18px;
-      --danger:#b42318;
-      --dangerBg: rgba(180,35,24,.08);
+      --bg:#ffffff; --muted:#f4f6f8; --text:#101828; --sub:#475467; --line:#e4e7ec;
+      --blue:#2b6cb0; --blue2:#0b63ce; --shadow:0 10px 30px rgba(16,24,40,.08); --r:18px;
+      --danger:#b42318; --dangerBg: rgba(180,35,24,.08);
     }
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
     header{
-      position:sticky;top:0;z-index:1000;
-      background:rgba(255,255,255,.92);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-      box-shadow:0 6px 20px rgba(16,24,40,.06);
+      position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);box-shadow:0 6px 20px rgba(16,24,40,.06);
     }
-    .nav-wrap{
-      max-width:1150px;margin:0 auto;padding:14px 18px;
-      display:flex;align-items:center;justify-content:space-between;gap:14px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);
-      font-weight:800;letter-spacing:.2px;font-size:20px;
-    }
-    .brand-badge{
-      width:40px;height:40px;border-radius:14px;
-      background:linear-gradient(135deg,var(--blue),#1f3c88);
-      box-shadow:0 10px 20px rgba(43,108,176,.25);
-      display:grid;place-items:center;color:#fff;font-weight:900;
-    }
+    .nav-wrap{max-width:1150px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800;font-size:20px}
+    .brand-badge{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--blue),#1f3c88);
+      box-shadow:0 10px 20px rgba(43,108,176,.25);display:grid;place-items:center;color:#fff;font-weight:900}
     nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .nav-link{
-      text-decoration:none;color:var(--sub);
-      padding:10px 12px;border-radius:12px;border:1px solid transparent;
-      transition:.2s ease;font-weight:700;font-size:14px;
-    }
+    .nav-link{text-decoration:none;color:var(--sub);padding:10px 12px;border-radius:12px;border:1px solid transparent;transition:.2s ease;font-weight:700;font-size:14px}
     .nav-link:hover{color:var(--text);background:var(--muted);border-color:var(--line)}
-    .nav-link.primary{
-      color:#fff;background:linear-gradient(135deg,var(--blue2),var(--blue));
-      border-color:rgba(43,108,176,.25);
-      box-shadow:0 10px 20px rgba(11,99,206,.20);
-    }
+    .nav-link.primary{color:#fff;background:linear-gradient(135deg,var(--blue2),var(--blue));border-color:rgba(43,108,176,.25);box-shadow:0 10px 20px rgba(11,99,206,.20)}
 
     .container{max-width:1150px;margin:0 auto;padding:26px 18px 90px}
 
-    .panel{
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      background:#fff;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .panel-head{
-      padding:18px 18px 12px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#ffffff,#fafbfc);
-    }
+    .panel{border:1px solid var(--line);border-radius:var(--r);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .panel-head{padding:18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#ffffff,#fafbfc)}
     .panel-head h1{margin:0 0 6px 0;font-size:22px}
     .panel-head p{margin:0;color:var(--sub);line-height:1.6}
 
     .panel-body{padding:18px}
 
-    .form{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .field{grid-column: span 6;}
-    .field.full{grid-column: span 12;}
-    label{display:block;font-weight:800;font-size:13px;margin:0 0 6px}
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      outline:none;
-      background:#fff;
-      box-shadow:0 6px 16px rgba(16,24,40,.05);
-      font-family: inherit;
+    .form{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:16px}
+    .field{grid-column:span 6}
+    .field.full{grid-column:span 12}
+    label{display:block;font-weight:900;font-size:13px;margin:0 0 6px}
+    input,select,textarea{
+      width:100%;padding:12px;border-radius:14px;border:1px solid var(--line);
+      outline:none;background:#fff;box-shadow:0 6px 16px rgba(16,24,40,.05);font-family:inherit
     }
     textarea{min-height:90px;resize:vertical}
 
-    .row{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px;
-    }
+    .hint{font-size:12.5px;color:var(--sub);line-height:1.5;margin-top:6px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
     .btn{
       padding:12px 14px;border-radius:14px;border:1px solid rgba(11,99,206,.20);
       background:rgba(11,99,206,.08);color:var(--blue2);
-      font-weight:900;cursor:pointer;transition:.2s ease;
+      font-weight:900;cursor:pointer;transition:.2s ease
     }
     .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
-    .btn.primary{
-      background:linear-gradient(135deg,var(--blue2),var(--blue));
-      color:#fff;border-color:rgba(43,108,176,.25);
-      box-shadow:0 10px 20px rgba(11,99,206,.18);
-    }
-    .btn.danger{
-      background:var(--dangerBg);
-      border-color:rgba(180,35,24,.25);
-      color:var(--danger);
-    }
+    .btn.primary{background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;border-color:rgba(43,108,176,.25);box-shadow:0 10px 20px rgba(11,99,206,.18)}
+    .btn.danger{background:var(--dangerBg);border-color:rgba(180,35,24,.25);color:var(--danger)}
+    .btn.ghost{background:#fff;border-color:var(--line);color:var(--text)}
 
-    .list{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 12px;
+    .preview{
+      display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+      padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--muted);
     }
-    .item{
-      grid-column: span 6;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      background: #fff;
-      box-shadow:0 10px 25px rgba(16,24,40,.06);
-    }
+    .preview img{width:90px;height:70px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .preview .ph{width:90px;height:70px;border-radius:12px;border:1px dashed var(--line);display:grid;place-items:center;color:var(--sub);font-weight:900;background:#fff}
+
+    .list{margin-top:18px;display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .item{grid-column:span 6;border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;box-shadow:0 10px 25px rgba(16,24,40,.06)}
     .item h3{margin:0 0 6px 0;font-size:16px}
     .item p{margin:0;color:var(--sub);line-height:1.55;font-size:13.5px}
-    .tag{
-      display:inline-block;
-      margin-top:8px;
-      padding:6px 10px;border-radius:999px;
-      background:var(--muted);border:1px solid var(--line);
-      font-weight:800;font-size:12px;color:#344054;
-    }
+    .tag{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:var(--muted);border:1px solid var(--line);font-weight:900;font-size:12px;color:#344054}
     .item .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
 
-    .note{
-      margin-top:14px;
-      padding:14px 16px;
-      border-radius:16px;
-      background:var(--muted);
-      border:1px solid var(--line);
-      color: var(--sub);
-      line-height:1.6;
-      font-weight:700;
-    }
-
-    @media (max-width: 860px){
-      .field{grid-column: span 12;}
-      .item{grid-column: span 12;}
+    @media (max-width:860px){
+      .field{grid-column:span 12}
+      .item{grid-column:span 12}
     }
   </style>
 </head>
@@ -162,14 +81,12 @@
 <body>
   <header>
     <div class="nav-wrap">
-      <a class="brand" href="index.html" aria-label="Ir al inicio">
+      <a class="brand" href="index.html">
         <span class="brand-badge">S</span><span>Segural</span>
       </a>
-
-      <nav aria-label="Navegación principal">
+      <nav>
         <a class="nav-link" href="index.html">Inicio</a>
         <a class="nav-link" href="productos.html">Productos</a>
-        <a class="nav-link" href="index.html#nosotros">Sobre nosotros</a>
         <a class="nav-link primary" href="admin.html">Admin</a>
       </nav>
     </div>
@@ -180,8 +97,7 @@
       <div class="panel-head">
         <h1>Panel Admin</h1>
         <p>
-          Acá podés <b>agregar, editar y eliminar</b> productos. Se guardan en el navegador (localStorage) y se ven en
-          <b>productos.html</b>.
+          Agregá productos en segundos. Podés <b>subir imagen desde tu PC</b> y dejar el <b>precio vacío</b> (queda “Consultar precio”).
         </p>
       </div>
 
@@ -204,41 +120,46 @@
           </div>
 
           <div class="field">
-            <label for="precio">Precio (ARS)</label>
-            <input id="precio" type="number" min="0" step="1" placeholder="Ej: 45000" />
+            <label for="precio">Precio (ARS) <span style="font-weight:800;color:var(--sub)">(opcional)</span></label>
+            <input id="precio" type="number" min="0" step="1" placeholder="Dejar vacío = Consultar" />
+            <div class="hint">Si no querés mostrar precio, no lo completes.</div>
           </div>
 
           <div class="field">
-            <label for="imagen">Imagen (URL)</label>
-            <input id="imagen" placeholder="Pegá un link a una imagen (opcional)" />
+            <label for="imgFile">Imagen (subir desde tu PC) <span style="font-weight:800;color:var(--sub)">(opcional)</span></label>
+            <input id="imgFile" type="file" accept="image/*" />
+            <div class="hint">La imagen se guarda en el navegador junto con el producto.</div>
           </div>
 
           <div class="field full">
-            <label for="descripcion">Descripción</label>
-            <textarea id="descripcion" placeholder="Detalle breve, características, instalación, etc. (opcional)"></textarea>
+            <label>Vista previa</label>
+            <div class="preview" id="preview">
+              <div class="ph">Sin imagen</div>
+              <div class="hint">Podés cargar imagen o dejarlo sin imagen.</div>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="descripcion">Descripción (opcional)</label>
+            <textarea id="descripcion" placeholder="Características, instalación, detalles, etc."></textarea>
           </div>
 
           <div class="field full">
             <div class="row">
               <button class="btn primary" type="submit" id="btnSave">Guardar producto</button>
-              <button class="btn" type="button" id="btnClear">Limpiar</button>
+              <button class="btn ghost" type="button" id="btnClear">Limpiar</button>
               <button class="btn danger" type="button" id="btnWipe">Borrar TODO</button>
             </div>
           </div>
         </form>
 
         <div id="list" class="list" aria-label="Listado admin"></div>
-
-        <div class="note">
-          Tip: si querés subir imágenes “sin link”, después te preparo una versión con carga de imagen (base64),
-          así no dependés de pegar URL.
-        </div>
       </div>
     </section>
   </main>
 
   <script>
-    const STORAGE_KEY = "segural_products_v1";
+    const STORAGE_KEY = "segural_products_v2";
 
     const $form = document.getElementById("form");
     const $list = document.getElementById("list");
@@ -246,13 +167,16 @@
     const $nombre = document.getElementById("nombre");
     const $categoria = document.getElementById("categoria");
     const $precio = document.getElementById("precio");
-    const $imagen = document.getElementById("imagen");
     const $descripcion = document.getElementById("descripcion");
+
+    const $imgFile = document.getElementById("imgFile");
+    const $preview = document.getElementById("preview");
 
     const $btnClear = document.getElementById("btnClear");
     const $btnWipe = document.getElementById("btnWipe");
 
     let editId = null;
+    let imageDataUrl = ""; // base64/dataURL
 
     function moneyARS(value){
       const n = Number(value || 0);
@@ -271,12 +195,68 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
     }
 
+    function uid(){
+      if (crypto && crypto.randomUUID) return crypto.randomUUID();
+      return String(Date.now()) + Math.random().toString(16).slice(2);
+    }
+
     function resetForm(){
       editId = null;
+      imageDataUrl = "";
       $form.reset();
       $categoria.value = "Alarmas";
+      renderPreview();
       $nombre.focus();
     }
+
+    function renderPreview(){
+      $preview.innerHTML = "";
+      if(imageDataUrl){
+        const img = document.createElement("img");
+        img.src = imageDataUrl;
+        img.alt = "Vista previa";
+        $preview.appendChild(img);
+      } else {
+        const ph = document.createElement("div");
+        ph.className = "ph";
+        ph.textContent = "Sin imagen";
+        $preview.appendChild(ph);
+      }
+      const hint = document.createElement("div");
+      hint.className = "hint";
+      hint.textContent = "La imagen es opcional. Si cargás una nueva, reemplaza la anterior.";
+      $preview.appendChild(hint);
+    }
+
+    async function fileToDataUrl(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    $imgFile.addEventListener("change", async () => {
+      const file = $imgFile.files && $imgFile.files[0];
+      if(!file){
+        imageDataUrl = "";
+        renderPreview();
+        return;
+      }
+
+      // (Opcional) límite simple para no explotar localStorage
+      const maxMB = 2.2;
+      const sizeMB = file.size / (1024 * 1024);
+      if(sizeMB > maxMB){
+        alert("La imagen es muy grande. Elegí una imagen más liviana (ideal < 2 MB).");
+        $imgFile.value = "";
+        return;
+      }
+
+      imageDataUrl = await fileToDataUrl(file);
+      renderPreview();
+    });
 
     function render(){
       const arr = load();
@@ -290,7 +270,7 @@
         div.style.borderRadius = "16px";
         div.style.background = "var(--muted)";
         div.style.color = "var(--sub)";
-        div.style.fontWeight = "800";
+        div.style.fontWeight = "900";
         div.textContent = "No hay productos cargados todavía.";
         $list.appendChild(div);
         return;
@@ -323,8 +303,10 @@
           $nombre.value = p.nombre || "";
           $categoria.value = p.categoria || "Alarmas";
           $precio.value = p.precio || "";
-          $imagen.value = p.imagen || "";
           $descripcion.value = p.descripcion || "";
+          imageDataUrl = p.imagen || "";
+          $imgFile.value = ""; // no se puede setear file por seguridad
+          renderPreview();
           window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
@@ -340,6 +322,12 @@
           if(editId === p.id) resetForm();
         };
 
+        const btnView = document.createElement("a");
+        btnView.className = "btn ghost";
+        btnView.textContent = "Ver";
+        btnView.href = `producto.html?id=${encodeURIComponent(p.id)}`;
+
+        actions.appendChild(btnView);
         actions.appendChild(btnEdit);
         actions.appendChild(btnDel);
 
@@ -357,35 +345,26 @@
 
       const nombre = ($nombre.value || "").trim();
       const categoria = $categoria.value;
-      const precio = ($precio.value || "").trim();
-      const imagen = ($imagen.value || "").trim();
+      const precioRaw = ($precio.value || "").trim();
       const descripcion = ($descripcion.value || "").trim();
 
       if(!nombre) return;
 
       const arr = load();
+      const payload = {
+        id: editId || uid(),
+        nombre,
+        categoria,
+        precio: precioRaw ? Number(precioRaw) : "", // opcional
+        imagen: imageDataUrl || "",                 // opcional
+        descripcion
+      };
 
       if(editId){
         const idx = arr.findIndex(x => x.id === editId);
-        if(idx >= 0){
-          arr[idx] = {
-            ...arr[idx],
-            nombre,
-            categoria,
-            precio: precio ? Number(precio) : "",
-            imagen,
-            descripcion
-          };
-        }
+        if(idx >= 0) arr[idx] = payload;
       } else {
-        arr.unshift({
-          id: crypto.randomUUID(),
-          nombre,
-          categoria,
-          precio: precio ? Number(precio) : "",
-          imagen,
-          descripcion
-        });
+        arr.unshift(payload);
       }
 
       save(arr);
@@ -403,6 +382,7 @@
     });
 
     // init
+    renderPreview();
     render();
     resetForm();
   </script>
