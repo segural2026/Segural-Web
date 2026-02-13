@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Segural | Admin</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --muted:#f4f6f8;
+      --text:#101828;
+      --sub:#475467;
+      --line:#e4e7ec;
+      --blue:#2b6cb0;
+      --blue2:#0b63ce;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --r:18px;
+      --danger:#b42318;
+      --dangerBg: rgba(180,35,24,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{
+      position:sticky;top:0;z-index:1000;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 6px 20px rgba(16,24,40,.06);
+    }
+    .nav-wrap{
+      max-width:1150px;margin:0 auto;padding:14px 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);
+      font-weight:800;letter-spacing:.2px;font-size:20px;
+    }
+    .brand-badge{
+      width:40px;height:40px;border-radius:14px;
+      background:linear-gradient(135deg,var(--blue),#1f3c88);
+      box-shadow:0 10px 20px rgba(43,108,176,.25);
+      display:grid;place-items:center;color:#fff;font-weight:900;
+    }
+    nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .nav-link{
+      text-decoration:none;color:var(--sub);
+      padding:10px 12px;border-radius:12px;border:1px solid transparent;
+      transition:.2s ease;font-weight:700;font-size:14px;
+    }
+    .nav-link:hover{color:var(--text);background:var(--muted);border-color:var(--line)}
+    .nav-link.primary{
+      color:#fff;background:linear-gradient(135deg,var(--blue2),var(--blue));
+      border-color:rgba(43,108,176,.25);
+      box-shadow:0 10px 20px rgba(11,99,206,.20);
+    }
+
+    .container{max-width:1150px;margin:0 auto;padding:26px 18px 90px}
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      background:#fff;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel-head{
+      padding:18px 18px 12px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff,#fafbfc);
+    }
+    .panel-head h1{margin:0 0 6px 0;font-size:22px}
+    .panel-head p{margin:0;color:var(--sub);line-height:1.6}
+
+    .panel-body{padding:18px}
+
+    .form{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .field{grid-column: span 6;}
+    .field.full{grid-column: span 12;}
+    label{display:block;font-weight:800;font-size:13px;margin:0 0 6px}
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      outline:none;
+      background:#fff;
+      box-shadow:0 6px 16px rgba(16,24,40,.05);
+      font-family: inherit;
+    }
+    textarea{min-height:90px;resize:vertical}
+
+    .row{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px;
+    }
+    .btn{
+      padding:12px 14px;border-radius:14px;border:1px solid rgba(11,99,206,.20);
+      background:rgba(11,99,206,.08);color:var(--blue2);
+      font-weight:900;cursor:pointer;transition:.2s ease;
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
+    .btn.primary{
+      background:linear-gradient(135deg,var(--blue2),var(--blue));
+      color:#fff;border-color:rgba(43,108,176,.25);
+      box-shadow:0 10px 20px rgba(11,99,206,.18);
+    }
+    .btn.danger{
+      background:var(--dangerBg);
+      border-color:rgba(180,35,24,.25);
+      color:var(--danger);
+    }
+
+    .list{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .item{
+      grid-column: span 6;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background: #fff;
+      box-shadow:0 10px 25px rgba(16,24,40,.06);
+    }
+    .item h3{margin:0 0 6px 0;font-size:16px}
+    .item p{margin:0;color:var(--sub);line-height:1.55;font-size:13.5px}
+    .tag{
+      display:inline-block;
+      margin-top:8px;
+      padding:6px 10px;border-radius:999px;
+      background:var(--muted);border:1px solid var(--line);
+      font-weight:800;font-size:12px;color:#344054;
+    }
+    .item .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+
+    .note{
+      margin-top:14px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:var(--muted);
+      border:1px solid var(--line);
+      color: var(--sub);
+      line-height:1.6;
+      font-weight:700;
+    }
+
+    @media (max-width: 860px){
+      .field{grid-column: span 12;}
+      .item{grid-column: span 12;}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Ir al inicio">
+        <span class="brand-badge">S</span><span>Segural</span>
+      </a>
+
+      <nav aria-label="Navegación principal">
+        <a class="nav-link" href="index.html">Inicio</a>
+        <a class="nav-link" href="productos.html">Productos</a>
+        <a class="nav-link" href="index.html#nosotros">Sobre nosotros</a>
+        <a class="nav-link primary" href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <div class="panel-head">
+        <h1>Panel Admin</h1>
+        <p>
+          Acá podés <b>agregar, editar y eliminar</b> productos. Se guardan en el navegador (localStorage) y se ven en
+          <b>productos.html</b>.
+        </p>
+      </div>
+
+      <div class="panel-body">
+        <form id="form" class="form">
+          <div class="field">
+            <label for="nombre">Nombre del producto</label>
+            <input id="nombre" required placeholder="Ej: Cámara IP WiFi 1080p" />
+          </div>
+
+          <div class="field">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" required>
+              <option value="Alarmas">Alarmas</option>
+              <option value="Cámaras">Cámaras</option>
+              <option value="Porteros">Porteros</option>
+              <option value="Portones">Equipos de portones</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="precio">Precio (ARS)</label>
+            <input id="precio" type="number" min="0" step="1" placeholder="Ej: 45000" />
+          </div>
+
+          <div class="field">
+            <label for="imagen">Imagen (URL)</label>
+            <input id="imagen" placeholder="Pegá un link a una imagen (opcional)" />
+          </div>
+
+          <div class="field full">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" placeholder="Detalle breve, características, instalación, etc. (opcional)"></textarea>
+          </div>
+
+          <div class="field full">
+            <div class="row">
+              <button class="btn primary" type="submit" id="btnSave">Guardar producto</button>
+              <button class="btn" type="button" id="btnClear">Limpiar</button>
+              <button class="btn danger" type="button" id="btnWipe">Borrar TODO</button>
+            </div>
+          </div>
+        </form>
+
+        <div id="list" class="list" aria-label="Listado admin"></div>
+
+        <div class="note">
+          Tip: si querés subir imágenes “sin link”, después te preparo una versión con carga de imagen (base64),
+          así no dependés de pegar URL.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "segural_products_v1";
+
+    const $form = document.getElementById("form");
+    const $list = document.getElementById("list");
+
+    const $nombre = document.getElementById("nombre");
+    const $categoria = document.getElementById("categoria");
+    const $precio = document.getElementById("precio");
+    const $imagen = document.getElementById("imagen");
+    const $descripcion = document.getElementById("descripcion");
+
+    const $btnClear = document.getElementById("btnClear");
+    const $btnWipe = document.getElementById("btnWipe");
+
+    let editId = null;
+
+    function moneyARS(value){
+      const n = Number(value || 0);
+      return n.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){ return []; }
+    }
+
+    function save(arr){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    function resetForm(){
+      editId = null;
+      $form.reset();
+      $categoria.value = "Alarmas";
+      $nombre.focus();
+    }
+
+    function render(){
+      const arr = load();
+      $list.innerHTML = "";
+
+      if(!arr.length){
+        const div = document.createElement("div");
+        div.style.gridColumn = "span 12";
+        div.style.padding = "14px";
+        div.style.border = "1px solid var(--line)";
+        div.style.borderRadius = "16px";
+        div.style.background = "var(--muted)";
+        div.style.color = "var(--sub)";
+        div.style.fontWeight = "800";
+        div.textContent = "No hay productos cargados todavía.";
+        $list.appendChild(div);
+        return;
+      }
+
+      for(const p of arr){
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = p.nombre;
+
+        const desc = document.createElement("p");
+        const priceTxt = p.precio ? moneyARS(p.precio) : "Consultar precio";
+        desc.textContent = `${priceTxt} • ${p.descripcion || "Sin descripción"}`;
+
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = p.categoria;
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const btnEdit = document.createElement("button");
+        btnEdit.type = "button";
+        btnEdit.className = "btn";
+        btnEdit.textContent = "Editar";
+        btnEdit.onclick = () => {
+          editId = p.id;
+          $nombre.value = p.nombre || "";
+          $categoria.value = p.categoria || "Alarmas";
+          $precio.value = p.precio || "";
+          $imagen.value = p.imagen || "";
+          $descripcion.value = p.descripcion || "";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        const btnDel = document.createElement("button");
+        btnDel.type = "button";
+        btnDel.className = "btn danger";
+        btnDel.textContent = "Eliminar";
+        btnDel.onclick = () => {
+          if(!confirm("¿Eliminar este producto?")) return;
+          const next = load().filter(x => x.id !== p.id);
+          save(next);
+          render();
+          if(editId === p.id) resetForm();
+        };
+
+        actions.appendChild(btnEdit);
+        actions.appendChild(btnDel);
+
+        item.appendChild(h3);
+        item.appendChild(desc);
+        item.appendChild(tag);
+        item.appendChild(actions);
+
+        $list.appendChild(item);
+      }
+    }
+
+    $form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const nombre = ($nombre.value || "").trim();
+      const categoria = $categoria.value;
+      const precio = ($precio.value || "").trim();
+      const imagen = ($imagen.value || "").trim();
+      const descripcion = ($descripcion.value || "").trim();
+
+      if(!nombre) return;
+
+      const arr = load();
+
+      if(editId){
+        const idx = arr.findIndex(x => x.id === editId);
+        if(idx >= 0){
+          arr[idx] = {
+            ...arr[idx],
+            nombre,
+            categoria,
+            precio: precio ? Number(precio) : "",
+            imagen,
+            descripcion
+          };
+        }
+      } else {
+        arr.unshift({
+          id: crypto.randomUUID(),
+          nombre,
+          categoria,
+          precio: precio ? Number(precio) : "",
+          imagen,
+          descripcion
+        });
+      }
+
+      save(arr);
+      render();
+      resetForm();
+    });
+
+    $btnClear.addEventListener("click", resetForm);
+
+    $btnWipe.addEventListener("click", () => {
+      if(!confirm("¿Seguro que querés borrar TODOS los productos?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+      resetForm();
+    });
+
+    // init
+    render();
+    resetForm();
+  </script>
+</body>
+</html>
