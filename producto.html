@@ -30,10 +30,26 @@
     .top{padding:18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#ffffff,#fafbfc)}
     .top h1{margin:0 0 6px 0;font-size:22px}
     .top p{margin:0;color:var(--sub);line-height:1.6}
+
     .content{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;padding:18px}
-    .img{grid-column:span 6;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--muted);display:grid;place-items:center;min-height:320px}
-    .img img{width:100%;height:100%;object-fit:cover}
-    .info{grid-column:span 6}
+    .left{grid-column:span 6}
+    .right{grid-column:span 6}
+
+    .mainImg{
+      border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--muted);
+      display:grid;place-items:center;min-height:320px;
+    }
+    .mainImg img{width:100%;height:100%;object-fit:cover}
+
+    .thumbs{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    .thumb{
+      width:72px;height:54px;border-radius:12px;overflow:hidden;border:1px solid var(--line);
+      background:#fff;cursor:pointer;
+      opacity:.9;transition:.2s;
+    }
+    .thumb:hover{opacity:1;transform:translateY(-1px)}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+
     .badge{display:inline-block;padding:8px 10px;border-radius:999px;background:var(--muted);border:1px solid var(--line);font-weight:900;color:#344054;margin-bottom:10px}
     .price{display:inline-block;font-weight:900;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--muted);margin:10px 0 12px}
     .desc{color:var(--sub);line-height:1.7}
@@ -43,9 +59,10 @@
     .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
     .btn.wa{background:#25D366;color:#fff;border-color:rgba(255,255,255,.2);box-shadow:0 12px 26px rgba(0,0,0,.12)}
     .notfound{padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--muted);color:var(--sub);font-weight:900}
+
     @media (max-width:900px){
-      .img{grid-column:span 12;min-height:260px}
-      .info{grid-column:span 12}
+      .left,.right{grid-column:span 12}
+      .mainImg{min-height:260px}
     }
   </style>
 </head>
@@ -68,20 +85,23 @@
     <section class="box" id="box" style="display:none;">
       <div class="top">
         <h1 id="name"></h1>
-        <p id="subtitle"></p>
+        <p>Detalle del producto</p>
       </div>
 
       <div class="content">
-        <div class="img" id="imgWrap"></div>
+        <div class="left">
+          <div class="mainImg" id="mainImg"></div>
+          <div class="thumbs" id="thumbs"></div>
+        </div>
 
-        <div class="info">
+        <div class="right">
           <div class="badge" id="cat"></div>
           <div class="price" id="price"></div>
           <div class="desc" id="desc"></div>
 
           <div class="actions">
-            <a class="btn" href="productos.html">← Volver a productos</a>
-            <a class="btn wa" id="wa" href="#" target="_blank" rel="noopener">💬 Consultar por WhatsApp</a>
+            <a class="btn" href="productos.html">← Volver</a>
+            <a class="btn wa" id="wa" href="#" target="_blank" rel="noopener">💬 Consultar WhatsApp</a>
           </div>
         </div>
       </div>
@@ -94,7 +114,7 @@
 
   <script>
     const WHATSAPP_NUMBER = "5491155034755";
-    const STORAGE_KEY = "segural_products_v2";
+    const STORAGE_KEY = "segural_products_v3";
 
     function moneyARS(value){
       const n = Number(value || 0);
@@ -120,6 +140,12 @@
       return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
     }
 
+    function getImages(p){
+      if(Array.isArray(p.imagenes) && p.imagenes.length) return p.imagenes;
+      if(p.imagen) return [p.imagen];
+      return [];
+    }
+
     const id = getId();
     const all = loadProducts();
     const p = all.find(x => String(x.id) === String(id));
@@ -132,24 +158,42 @@
     } else {
       document.title = `Segural | ${p.nombre}`;
       document.getElementById("name").textContent = p.nombre || "Producto";
-      document.getElementById("subtitle").textContent = "Detalle del producto y consulta por WhatsApp.";
       document.getElementById("cat").textContent = p.categoria || "Sin categoría";
       document.getElementById("price").textContent = p.precio ? moneyARS(p.precio) : "Consultar precio";
       document.getElementById("desc").textContent = p.descripcion || "Sin descripción.";
 
-      const imgWrap = document.getElementById("imgWrap");
-      imgWrap.innerHTML = "";
-      if(p.imagen){
+      const imgs = getImages(p);
+
+      const main = document.getElementById("mainImg");
+      const thumbs = document.getElementById("thumbs");
+
+      function setMain(src){
+        main.innerHTML = "";
+        if(!src){
+          main.textContent = "Sin imagen";
+          return;
+        }
         const img = document.createElement("img");
-        img.src = p.imagen;
+        img.src = src;
         img.alt = p.nombre || "Producto";
-        imgWrap.appendChild(img);
-      } else {
-        imgWrap.textContent = "Sin imagen";
+        main.appendChild(img);
       }
 
-      const wa = document.getElementById("wa");
-      wa.href = buildWhatsAppLink(p);
+      setMain(imgs[0] || "");
+
+      thumbs.innerHTML = "";
+      imgs.forEach((src) => {
+        const t = document.createElement("div");
+        t.className = "thumb";
+        const im = document.createElement("img");
+        im.src = src;
+        im.alt = "miniatura";
+        t.appendChild(im);
+        t.onclick = () => setMain(src);
+        thumbs.appendChild(t);
+      });
+
+      document.getElementById("wa").href = buildWhatsAppLink(p);
 
       $box.style.display = "block";
     }
