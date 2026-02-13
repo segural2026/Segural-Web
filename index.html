@@ -7,318 +7,180 @@
 
   <style>
     :root{
-      --bg: #ffffff;
-      --muted: #f4f6f8;
-      --text: #101828;
+      --bg:#ffffff;
+      --muted:#f4f6f8;
+      --text:#101828;
       --subtext:#475467;
       --line:#e4e7ec;
       --blue:#2b6cb0;
       --blue2:#0b63ce;
-      --shadow: 0 10px 30px rgba(16,24,40,.08);
-      --radius: 18px;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --radius:18px;
     }
 
-    *{ box-sizing: border-box; }
-    html{ scroll-behavior: smooth; }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
     }
 
-    /* Header fijo */
+    /* HEADER */
     header{
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-      box-shadow: 0 6px 20px rgba(16,24,40,.06);
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(255,255,255,.95);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 6px 20px rgba(16,24,40,.06);
     }
 
     .nav-wrap{
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 14px 18px;
+      max-width:1150px;
+      margin:0 auto;
+      padding:14px 18px;
       display:flex;
       align-items:center;
-      justify-content: space-between;
-      gap: 14px;
+      justify-content:space-between;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap: 10px;
+      gap:10px;
       text-decoration:none;
-      color: var(--text);
-      font-weight: 800;
-      letter-spacing: .2px;
-      font-size: 20px;
+      color:var(--text);
+      font-weight:800;
+      font-size:20px;
     }
 
     .brand-badge{
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), #1f3c88);
-      box-shadow: 0 10px 20px rgba(43,108,176,.25);
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      background:linear-gradient(135deg,var(--blue),#1f3c88);
       display:grid;
       place-items:center;
       color:#fff;
-      font-weight: 900;
+      font-weight:900;
     }
 
-    nav{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
+    nav{display:flex;gap:10px}
 
     .nav-link{
       text-decoration:none;
-      color: var(--subtext);
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      transition: .2s ease;
-      font-weight: 700;
-      font-size: 14px;
+      color:var(--subtext);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+      transition:.2s;
     }
 
     .nav-link:hover{
-      color: var(--text);
-      background: var(--muted);
-      border-color: var(--line);
+      background:var(--muted);
+      color:var(--text);
     }
 
     .nav-link.primary{
-      color: #fff;
-      background: linear-gradient(135deg, var(--blue2), var(--blue));
-      border-color: rgba(43,108,176,.25);
-      box-shadow: 0 10px 20px rgba(11,99,206,.20);
-    }
-    .nav-link.primary:hover{
-      filter: brightness(1.03);
-      transform: translateY(-1px);
+      background:linear-gradient(135deg,var(--blue2),var(--blue));
+      color:#fff;
     }
 
-    /* Layout general */
+    /* CONTENIDO */
     .container{
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 26px 18px 80px;
+      max-width:1150px;
+      margin:0 auto;
+      padding:30px 18px 80px;
     }
 
     .hero{
-      margin-top: 16px;
-      padding: 28px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, #ffffff, #fafbfc);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before{
-      content:"";
-      position:absolute;
-      inset:-120px -120px auto auto;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(43,108,176,.18), rgba(43,108,176,0) 60%);
-      pointer-events:none;
+      padding:40px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,#ffffff,#fafbfc);
+      box-shadow:var(--shadow);
     }
 
     .hero h1{
-      margin: 0 0 10px 0;
-      font-size: clamp(30px, 4vw, 44px);
-      letter-spacing: .2px;
+      margin:0 0 15px 0;
+      font-size:40px;
     }
 
     .hero p{
-      margin: 0 0 16px 0;
-      color: var(--subtext);
-      line-height: 1.65;
-      font-size: 16px;
-      max-width: 900px;
+      margin:0;
+      font-size:16px;
+      color:var(--subtext);
+      line-height:1.6;
+      max-width:850px;
     }
 
-    .chips{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .chip{
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: var(--muted);
-      border: 1px solid var(--line);
-      color: #344054;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .grid{
-      margin-top: 22px;
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-    }
-
-    .card{
-      grid-column: span 6;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      box-shadow: 0 10px 25px rgba(16,24,40,.06);
-      padding: 18px;
-    }
-
-    .card h3{
-      margin: 0 0 8px 0;
-      font-size: 18px;
-    }
-
-    .card p{
-      margin: 0;
-      color: var(--subtext);
-      line-height: 1.6;
-      font-size: 14.5px;
-    }
-
-    .section{
-      margin-top: 34px;
-      padding: 22px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: 0 10px 25px rgba(16,24,40,.06);
-    }
-
-    .section h2{
-      margin: 0 0 10px 0;
-      font-size: 22px;
-    }
-
-    .section .hint{
-      margin: 0 0 18px 0;
-      color: var(--subtext);
-      line-height: 1.6;
-    }
-
-    .product-list{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-    }
-
-    .product{
-      grid-column: span 6;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, #ffffff, #fbfcff);
-      padding: 16px;
-    }
-
-    .product strong{
-      display:block;
-      margin-bottom: 6px;
-      font-size: 16px;
-    }
-
-    .product small{
-      display:block;
-      color: var(--subtext);
-      line-height: 1.55;
-    }
-
-    .product a{
-      display:inline-block;
-      margin-top: 12px;
-      text-decoration:none;
-      font-weight: 800;
-      color: var(--blue2);
-      background: rgba(11,99,206,.08);
-      border: 1px solid rgba(11,99,206,.20);
-      padding: 10px 12px;
-      border-radius: 12px;
-      transition: .2s ease;
-    }
-    .product a:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-
-    /* Footer del inicio con borde azul */
-    .dev-footer{
-      margin-top: 22px;
-      padding: 14px 16px;
-      border: 2px solid var(--blue);
-      border-radius: 14px;
-      background: #fff;
-    }
-    .dev-footer b{ color: var(--blue); }
-    .dev-footer p{
-      margin: 6px 0 0 0;
-      color: var(--subtext);
-      font-weight: 700;
-    }
-
-    /* WhatsApp flotante */
+    /* WHATSAPP */
     .wa-float{
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 9999;
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:9999;
       display:flex;
       align-items:center;
-      gap: 10px;
+      gap:10px;
       text-decoration:none;
-      background: #25D366;
+      background:#25D366;
       color:#fff;
-      padding: 12px 14px;
-      border-radius: 999px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.18);
-      font-weight: 800;
-      border: 1px solid rgba(255,255,255,.25);
-      transition: .2s ease;
-    }
-    .wa-float:hover{ transform: translateY(-2px); filter: brightness(1.02); }
-    .wa-icon{
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.18);
-      display:grid;
-      place-items:center;
-      font-size: 18px;
+      padding:12px 16px;
+      border-radius:999px;
+      font-weight:900;
+      box-shadow:0 12px 30px rgba(0,0,0,.2);
     }
 
-    /* Responsive */
-    @media (max-width: 860px){
-      .card{ grid-column: span 12; }
-      .product{ grid-column: span 12; }
+    /* FOOTER */
+    .site-footer{
+      border-top:1px solid var(--line);
+      background:#fff;
+      margin-top:40px;
     }
+
+    .footer-inner{
+      max-width:1150px;
+      margin:0 auto;
+      padding:20px 18px;
+    }
+
+    .dev-footer{
+      padding:16px;
+      border:2px solid var(--blue);
+      border-radius:14px;
+      background:#fff;
+    }
+
+    .dev-footer b{
+      color:var(--blue);
+    }
+
+    .dev-footer p{
+      margin:6px 0 0 0;
+      font-weight:700;
+      color:var(--subtext);
+    }
+
   </style>
 </head>
 
 <body>
+
   <!-- HEADER -->
   <header>
     <div class="nav-wrap">
-      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+      <a class="brand" href="#">
         <span class="brand-badge">S</span>
         <span>Segural</span>
       </a>
 
-      <nav aria-label="Navegación principal">
-        <a class="nav-link" href="#inicio">Inicio</a>
-        <a class="nav-link" href="#productos">Productos</a>
-        <a class="nav-link" href="#nosotros">Sobre nosotros</a>
+      <nav>
+        <a class="nav-link" href="index.html">Inicio</a>
+        <a class="nav-link" href="productos.html">Productos</a>
+        <a class="nav-link" href="#">Sobre nosotros</a>
         <a class="nav-link primary" href="admin.html">Admin</a>
       </nav>
     </div>
@@ -326,102 +188,33 @@
 
   <!-- CONTENIDO -->
   <main class="container">
-
-    <!-- INICIO -->
-    <section id="inicio" class="hero">
+    <section class="hero">
       <h1>Segural</h1>
       <p>
-        Bienvenido/a a <b>Segural</b>. Nos dedicamos a brindar soluciones de seguridad confiables y modernas para hogares,
-        comercios e instalaciones. Nuestro objetivo es ayudarte a elegir el equipo indicado y coordinar la atención de forma
-        rápida y ordenada, con asesoramiento claro y profesional.
+        Bienvenido a Segural. Brindamos soluciones integrales en seguridad
+        para hogares y comercios. Nuestro compromiso es ofrecer productos
+        confiables, asesoramiento profesional y atención personalizada para
+        garantizar protección y tranquilidad.
       </p>
+    </section>
+  </main>
 
-      <div class="chips" aria-label="Categorías principales">
-        <span class="chip">Alarmas</span>
-        <span class="chip">Cámaras</span>
-        <span class="chip">Porteros de acceso</span>
-        <span class="chip">Automatización de portones</span>
-      </div>
+  <!-- BOTÓN WHATSAPP -->
+  <a class="wa-float"
+     href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20hacer%20una%20consulta."
+     target="_blank">
+     💬 WhatsApp
+  </a>
 
-      <div class="grid" aria-label="Beneficios principales">
-        <div class="card">
-          <h3>Atención por WhatsApp</h3>
-          <p>Consultá disponibilidad, recomendaciones y presupuestos directamente por WhatsApp, de manera simple y rápida.</p>
-        </div>
-        <div class="card">
-          <h3>Asesoramiento profesional</h3>
-          <p>Te guiamos para elegir la opción adecuada según tu necesidad, el tipo de instalación y el nivel de seguridad buscado.</p>
-        </div>
-      </div>
-
-      <!-- Bloque solicitado abajo del todo del inicio -->
-      <div class="dev-footer" aria-label="Pie de desarrollo web">
+  <!-- FOOTER SEPARADO -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="dev-footer">
         <b>Desarrollo web:</b>
         <p>Contacto: 1155034755 (Santiago)</p>
       </div>
-    </section>
-
-    <!-- PRODUCTOS -->
-    <section id="productos" class="section">
-      <h2>Productos</h2>
-      <p class="hint">
-        Seleccioná una categoría y escribinos por WhatsApp para coordinar asesoramiento, stock y presupuesto.
-      </p>
-
-      <div class="product-list">
-        <div class="product">
-          <strong>Alarmas</strong>
-          <small>Sistemas de alarma para hogar y comercio. Opciones con sirena, sensores y control remoto.</small>
-          <a href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20consultar%20por%20ALARMAS.%20%C2%BFMe%20asesor%C3%A1s%3F" target="_blank" rel="noopener">
-            Consultar por WhatsApp
-          </a>
-        </div>
-
-        <div class="product">
-          <strong>Cámaras</strong>
-          <small>Cámaras de seguridad para interior/exterior. Modelos para monitoreo y registro.</small>
-          <a href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20consultar%20por%20C%C3%81MARAS.%20%C2%BFQu%C3%A9%20opci%C3%B3n%20me%20recomend%C3%A1s%3F" target="_blank" rel="noopener">
-            Consultar por WhatsApp
-          </a>
-        </div>
-
-        <div class="product">
-          <strong>Porteros de acceso</strong>
-          <small>Soluciones de acceso para viviendas, edificios y comercios. Audio y video portero.</small>
-          <a href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20consultar%20por%20PORTEROS%20DE%20ACCESO.%20%C2%BFMe%20pas%C3%A1s%20opciones%3F" target="_blank" rel="noopener">
-            Consultar por WhatsApp
-          </a>
-        </div>
-
-        <div class="product">
-          <strong>Equipos para portones</strong>
-          <small>Automatización de portones: elevadizos, batientes y corredizos. Asesoramiento según medidas y peso.</small>
-          <a href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20consultar%20por%20EQUIPOS%20PARA%20PORTONES%20(elevadizo%2Fbatiente%2Fcorredizo).%20%C2%BFC%C3%B3mo%20lo%20cotizamos%3F" target="_blank" rel="noopener">
-            Consultar por WhatsApp
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- SOBRE NOSOTROS -->
-    <section id="nosotros" class="section">
-      <h2>Sobre nosotros</h2>
-      <p class="hint">
-        En Segural trabajamos con un enfoque práctico: entender tu necesidad, recomendarte opciones y ayudarte a avanzar con
-        una solución segura y ordenada. Si querés, podés enviarnos fotos del lugar o una breve descripción para asesorarte mejor.
-      </p>
-    </section>
-
-  </main>
-
-  <!-- BOTÓN FLOTANTE WHATSAPP -->
-  <a class="wa-float"
-     href="https://wa.me/5491155034755?text=Hola%20Segural%2C%20quiero%20hacer%20una%20consulta."
-     target="_blank" rel="noopener"
-     aria-label="Abrir WhatsApp para consultar">
-    <span class="wa-icon">💬</span>
-    WhatsApp
-  </a>
+    </div>
+  </footer>
 
 </body>
 </html>
