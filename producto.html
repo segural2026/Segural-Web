@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Segural | Producto</title>
+
+  <style>
+    :root{
+      --bg:#ffffff; --muted:#f4f6f8; --text:#101828; --sub:#475467; --line:#e4e7ec;
+      --blue:#2b6cb0; --blue2:#0b63ce; --shadow:0 10px 30px rgba(16,24,40,.08); --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{
+      position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);box-shadow:0 6px 20px rgba(16,24,40,.06);
+    }
+    .nav-wrap{max-width:1150px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800;font-size:20px}
+    .brand-badge{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--blue),#1f3c88);
+      box-shadow:0 10px 20px rgba(43,108,176,.25);display:grid;place-items:center;color:#fff;font-weight:900}
+    nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .nav-link{text-decoration:none;color:var(--sub);padding:10px 12px;border-radius:12px;border:1px solid transparent;transition:.2s ease;font-weight:700;font-size:14px}
+    .nav-link:hover{color:var(--text);background:var(--muted);border-color:var(--line)}
+    .nav-link.primary{color:#fff;background:linear-gradient(135deg,var(--blue2),var(--blue));border-color:rgba(43,108,176,.25);box-shadow:0 10px 20px rgba(11,99,206,.20)}
+
+    .container{max-width:1150px;margin:0 auto;padding:26px 18px 90px}
+    .box{border:1px solid var(--line);border-radius:var(--r);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .top{padding:18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#ffffff,#fafbfc)}
+    .top h1{margin:0 0 6px 0;font-size:22px}
+    .top p{margin:0;color:var(--sub);line-height:1.6}
+    .content{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;padding:18px}
+    .img{grid-column:span 6;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--muted);display:grid;place-items:center;min-height:320px}
+    .img img{width:100%;height:100%;object-fit:cover}
+    .info{grid-column:span 6}
+    .badge{display:inline-block;padding:8px 10px;border-radius:999px;background:var(--muted);border:1px solid var(--line);font-weight:900;color:#344054;margin-bottom:10px}
+    .price{display:inline-block;font-weight:900;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--muted);margin:10px 0 12px}
+    .desc{color:var(--sub);line-height:1.7}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(11,99,206,.20);
+      background:rgba(11,99,206,.08);color:var(--blue2);font-weight:900;text-decoration:none;transition:.2s ease}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
+    .btn.wa{background:#25D366;color:#fff;border-color:rgba(255,255,255,.2);box-shadow:0 12px 26px rgba(0,0,0,.12)}
+    .notfound{padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--muted);color:var(--sub);font-weight:900}
+    @media (max-width:900px){
+      .img{grid-column:span 12;min-height:260px}
+      .info{grid-column:span 12}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-badge">S</span><span>Segural</span>
+      </a>
+      <nav>
+        <a class="nav-link" href="index.html">Inicio</a>
+        <a class="nav-link primary" href="productos.html">Productos</a>
+        <a class="nav-link" href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="box" id="box" style="display:none;">
+      <div class="top">
+        <h1 id="name"></h1>
+        <p id="subtitle"></p>
+      </div>
+
+      <div class="content">
+        <div class="img" id="imgWrap"></div>
+
+        <div class="info">
+          <div class="badge" id="cat"></div>
+          <div class="price" id="price"></div>
+          <div class="desc" id="desc"></div>
+
+          <div class="actions">
+            <a class="btn" href="productos.html">← Volver a productos</a>
+            <a class="btn wa" id="wa" href="#" target="_blank" rel="noopener">💬 Consultar por WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="notfound" id="nf" style="display:none;">
+      Producto no encontrado. Volvé a <a href="productos.html">Productos</a>.
+    </div>
+  </main>
+
+  <script>
+    const WHATSAPP_NUMBER = "5491155034755";
+    const STORAGE_KEY = "segural_products_v2";
+
+    function moneyARS(value){
+      const n = Number(value || 0);
+      return n.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
+    }
+
+    function loadProducts(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){ return []; }
+    }
+
+    function getId(){
+      const url = new URL(location.href);
+      return url.searchParams.get("id");
+    }
+
+    function buildWhatsAppLink(p){
+      const priceTxt = p.precio ? (" - " + moneyARS(p.precio)) : " - Consultar precio";
+      const text = `Hola Segural, quiero consultar por: ${p.nombre}${priceTxt}. Categoria: ${p.categoria}.`;
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    }
+
+    const id = getId();
+    const all = loadProducts();
+    const p = all.find(x => String(x.id) === String(id));
+
+    const $box = document.getElementById("box");
+    const $nf  = document.getElementById("nf");
+
+    if(!p){
+      $nf.style.display = "block";
+    } else {
+      document.title = `Segural | ${p.nombre}`;
+      document.getElementById("name").textContent = p.nombre || "Producto";
+      document.getElementById("subtitle").textContent = "Detalle del producto y consulta por WhatsApp.";
+      document.getElementById("cat").textContent = p.categoria || "Sin categoría";
+      document.getElementById("price").textContent = p.precio ? moneyARS(p.precio) : "Consultar precio";
+      document.getElementById("desc").textContent = p.descripcion || "Sin descripción.";
+
+      const imgWrap = document.getElementById("imgWrap");
+      imgWrap.innerHTML = "";
+      if(p.imagen){
+        const img = document.createElement("img");
+        img.src = p.imagen;
+        img.alt = p.nombre || "Producto";
+        imgWrap.appendChild(img);
+      } else {
+        imgWrap.textContent = "Sin imagen";
+      }
+
+      const wa = document.getElementById("wa");
+      wa.href = buildWhatsAppLink(p);
+
+      $box.style.display = "block";
+    }
+  </script>
+</body>
+</html>
