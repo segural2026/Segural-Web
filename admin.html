@@ -11,6 +11,7 @@
       --blue:#2b6cb0; --blue2:#0b63ce; --shadow:0 10px 30px rgba(16,24,40,.10); --r:18px;
       --danger:#b42318; --dangerBg: rgba(180,35,24,.08);
       --ok:#027a48; --okBg: rgba(2,122,72,.10);
+      --offer:#b54708; --offerBg: rgba(181,71,8,.12);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -57,6 +58,7 @@
     .item h3{margin:0 0 6px 0;font-size:16px}
     .item p{margin:0;color:var(--sub);line-height:1.55;font-size:13.5px}
     .tag{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:var(--muted);border:1px solid var(--line);font-weight:900;font-size:12px;color:#344054}
+    .tag.offer{background:var(--offerBg);border-color:rgba(181,71,8,.25);color:var(--offer)}
     .item .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
 
     .thumbs{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
@@ -131,6 +133,14 @@
     .file-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .file-row input[type="file"]{padding:10px}
 
+    .toggle{
+      display:flex;align-items:center;gap:10px;
+      padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;
+      box-shadow:0 6px 16px rgba(16,24,40,.05);
+    }
+    .toggle input{width:18px;height:18px}
+    .toggle span{font-weight:900;color:#344054}
+
     .hidden{display:none !important}
 
     @media (max-width:860px){
@@ -158,7 +168,7 @@
     <section class="topbar">
       <div>
         <h1>Panel Admin</h1>
-        <p>Administrá tu catálogo: <b>modal “Agregar producto”</b>, <b>varias imágenes</b> y <b>exportar/importar</b>.</p>
+        <p>Modal + varias imágenes + exportar/importar + <b>OFERTAS</b>.</p>
       </div>
 
       <div class="top-actions">
@@ -171,15 +181,15 @@
     </section>
 
     <div class="note">
-      Tip: para no perder productos, usá <b>Exportar</b> y guardá el archivo. Si cambiaste de PC o navegador, usá <b>Importar</b>.
+      Para no perder tus productos: <b>Exportar</b> guarda un archivo. <b>Importar</b> lo restaura en cualquier PC/navegador.
     </div>
 
-    <div id="list" class="list" aria-label="Listado de productos"></div>
+    <div id="list" class="list"></div>
   </main>
 
   <!-- MODAL -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Agregar producto">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-head">
         <h2 id="modalTitle">Agregar producto</h2>
         <button class="btn ghost small" id="btnCloseModal" type="button">Cerrar ✕</button>
@@ -207,7 +217,16 @@
             <div class="field">
               <label for="precio">Precio (opcional)</label>
               <input id="precio" type="number" min="0" step="1" placeholder="Dejar vacío = Consultar precio" />
-              <div class="hint">Si queda vacío, en la tienda aparecerá “Consultar precio”.</div>
+              <div class="hint">Si queda vacío, aparece “Consultar precio”.</div>
+            </div>
+
+            <div class="field">
+              <label>Promoción</label>
+              <div class="toggle">
+                <input id="oferta" type="checkbox" />
+                <span>Marcar como OFERTA</span>
+              </div>
+              <div class="hint">En la tienda se mostrará una etiqueta “OFERTA”.</div>
             </div>
 
             <div class="field">
@@ -216,7 +235,7 @@
                 <input id="imgFiles" type="file" accept="image/*" multiple />
                 <button class="btn small" id="btnClearImgs" type="button">Limpiar imágenes</button>
               </div>
-              <div class="hint">Recomendado: imágenes livianas (ideal &lt; 2MB cada una).</div>
+              <div class="hint">Recomendado: imágenes livianas (&lt; 2MB cada una).</div>
             </div>
 
             <div class="field full">
@@ -242,7 +261,6 @@
   <script>
     const STORAGE_KEY = "segural_products_v3";
 
-    // UI
     const $list = document.getElementById("list");
 
     const $btnOpenModal = document.getElementById("btnOpenModal");
@@ -256,20 +274,20 @@
     const $importFile = document.getElementById("importFile");
     const $btnWipe = document.getElementById("btnWipe");
 
-    // Form
     const $form = document.getElementById("form");
     const $nombre = document.getElementById("nombre");
     const $categoria = document.getElementById("categoria");
     const $precio = document.getElementById("precio");
     const $descripcion = document.getElementById("descripcion");
+    const $oferta = document.getElementById("oferta");
+
     const $imgFiles = document.getElementById("imgFiles");
     const $btnClearImgs = document.getElementById("btnClearImgs");
     const $gallery = document.getElementById("gallery");
     const $btnSave = document.getElementById("btnSave");
 
-    // State
     let editId = null;
-    let images = []; // array of dataURLs
+    let images = []; // dataURLs
 
     function uid(){
       if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -297,8 +315,7 @@
       $modalBackdrop.style.display = "flex";
       $modalBackdrop.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-      if(mode === "edit") $modalTitle.textContent = "Editar producto";
-      else $modalTitle.textContent = "Agregar producto";
+      $modalTitle.textContent = (mode === "edit") ? "Editar producto" : "Agregar producto";
       setTimeout(() => $nombre.focus(), 50);
     }
 
@@ -327,24 +344,17 @@
         $gallery.appendChild(ph);
         return;
       }
-
       images.forEach((src, idx) => {
         const wrap = document.createElement("div");
         wrap.className = "gimg";
-
         const img = document.createElement("img");
         img.src = src;
-        img.alt = "Imagen " + (idx + 1);
-
+        img.alt = "Imagen " + (idx+1);
         const del = document.createElement("button");
         del.type = "button";
-        del.title = "Quitar";
         del.textContent = "×";
-        del.onclick = () => {
-          images.splice(idx, 1);
-          renderGallery();
-        };
-
+        del.title = "Quitar";
+        del.onclick = () => { images.splice(idx,1); renderGallery(); };
         wrap.appendChild(img);
         wrap.appendChild(del);
         $gallery.appendChild(wrap);
@@ -360,12 +370,10 @@
       });
     }
 
-    // Límite: para no romper localStorage
     function validateImage(file){
       const maxMB = 2.2;
       const sizeMB = file.size / (1024 * 1024);
-      if(sizeMB > maxMB) return false;
-      return true;
+      return sizeMB <= maxMB;
     }
 
     $imgFiles.addEventListener("change", async () => {
@@ -390,7 +398,6 @@
       $imgFiles.value = "";
     });
 
-    // Modal events
     $btnOpenModal.addEventListener("click", () => {
       resetForm();
       openModal("add");
@@ -399,15 +406,27 @@
     $btnCloseModal.addEventListener("click", closeModal);
     $btnCancel.addEventListener("click", closeModal);
 
-    // cerrar clic afuera
     $modalBackdrop.addEventListener("click", (e) => {
       if(e.target === $modalBackdrop) closeModal();
     });
 
-    // ESC
     window.addEventListener("keydown", (e) => {
       if(e.key === "Escape" && $modalBackdrop.style.display === "flex") closeModal();
     });
+
+    function normalizeProduct(obj){
+      const imagenes = Array.isArray(obj.imagenes) ? obj.imagenes : (obj.imagen ? [obj.imagen] : []);
+      return {
+        id: obj.id || uid(),
+        nombre: String(obj.nombre || "").trim(),
+        categoria: String(obj.categoria || "Otros"),
+        precio: obj.precio === "" || obj.precio === null || obj.precio === undefined ? "" : Number(obj.precio),
+        descripcion: String(obj.descripcion || ""),
+        imagenes: imagenes.filter(Boolean),
+        oferta: !!obj.oferta,
+        createdAt: obj.createdAt || Date.now()
+      };
+    }
 
     function renderList(){
       const arr = load();
@@ -422,7 +441,7 @@
         div.style.background = "var(--muted)";
         div.style.color = "var(--sub)";
         div.style.fontWeight = "900";
-        div.textContent = "No hay productos cargados todavía. Usá “＋ Agregar producto”.";
+        div.textContent = "No hay productos. Usá “＋ Agregar producto”.";
         $list.appendChild(div);
         return;
       }
@@ -450,18 +469,24 @@
         left.appendChild(info);
         left.appendChild(tag);
 
+        if(p.oferta){
+          const offer = document.createElement("span");
+          offer.className = "tag offer";
+          offer.style.marginLeft = "8px";
+          offer.textContent = "OFERTA";
+          left.appendChild(offer);
+        }
+
         const right = document.createElement("div");
         const view = document.createElement("a");
         view.className = "btn ghost small";
         view.href = `producto.html?id=${encodeURIComponent(p.id)}`;
         view.textContent = "Ver";
-
         right.appendChild(view);
 
         top.appendChild(left);
         top.appendChild(right);
 
-        // thumbs
         const thumbs = document.createElement("div");
         thumbs.className = "thumbs";
         const imgs = Array.isArray(p.imagenes) ? p.imagenes : [];
@@ -485,6 +510,7 @@
           $categoria.value = p.categoria || "Alarmas";
           $precio.value = p.precio || "";
           $descripcion.value = p.descripcion || "";
+          $oferta.checked = !!p.oferta;
           images = Array.isArray(p.imagenes) ? [...p.imagenes] : [];
           renderGallery();
           openModal("edit");
@@ -512,21 +538,7 @@
       }
     }
 
-    function normalizeProduct(obj){
-      // compatibilidad: si venía con "imagen" sola, lo pasamos a "imagenes"
-      const imagenes = Array.isArray(obj.imagenes) ? obj.imagenes : (obj.imagen ? [obj.imagen] : []);
-      return {
-        id: obj.id || uid(),
-        nombre: String(obj.nombre || "").trim(),
-        categoria: String(obj.categoria || "Otros"),
-        precio: obj.precio === "" || obj.precio === null || obj.precio === undefined ? "" : Number(obj.precio),
-        descripcion: String(obj.descripcion || ""),
-        imagenes: imagenes.filter(Boolean)
-      };
-    }
-
     $btnSave.addEventListener("click", () => {
-      // validación mínima
       const nombre = ($nombre.value || "").trim();
       if(!nombre){
         alert("Poné un nombre de producto.");
@@ -537,6 +549,7 @@
       const categoria = $categoria.value;
       const precioRaw = ($precio.value || "").trim();
       const descripcion = ($descripcion.value || "").trim();
+      const oferta = !!$oferta.checked;
 
       const payload = normalizeProduct({
         id: editId || uid(),
@@ -544,7 +557,9 @@
         categoria,
         precio: precioRaw ? Number(precioRaw) : "",
         descripcion,
-        imagenes: images
+        imagenes: images,
+        oferta,
+        createdAt: editId ? (load().find(x=>x.id===editId)?.createdAt || Date.now()) : Date.now()
       });
 
       let arr = load();
@@ -564,14 +579,8 @@
     // EXPORT
     $btnExport.addEventListener("click", () => {
       const arr = load();
-      const data = {
-        app: "Segural",
-        version: 3,
-        exportedAt: new Date().toISOString(),
-        products: arr
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const data = { app:"Segural", version:3, exportedAt:new Date().toISOString(), products:arr };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
       const url = URL.createObjectURL(blob);
 
       const a = document.createElement("a");
@@ -580,7 +589,6 @@
       document.body.appendChild(a);
       a.click();
       a.remove();
-
       URL.revokeObjectURL(url);
     });
 
@@ -594,7 +602,6 @@
       try{
         const text = await file.text();
         const parsed = JSON.parse(text);
-
         const incoming = Array.isArray(parsed) ? parsed : (parsed.products || []);
         if(!Array.isArray(incoming)){
           alert("Archivo inválido. No se encontró lista de productos.");
@@ -603,26 +610,21 @@
 
         const normalized = incoming.map(normalizeProduct).filter(p => p.nombre);
 
-        // combinar por id (si existe, reemplaza; si no, agrega)
         const current = load();
         const map = new Map(current.map(p => [p.id, p]));
+        for(const p of normalized) map.set(p.id, p);
 
-        for(const p of normalized){
-          map.set(p.id, p);
-        }
-
-        const merged = Array.from(map.values());
-        save(merged);
+        save(Array.from(map.values()));
         renderList();
         alert("Importación completada ✅");
       }catch(e){
-        alert("No se pudo importar. Archivo JSON inválido.");
+        alert("No se pudo importar. JSON inválido.");
       }finally{
         $importFile.value = "";
       }
     });
 
-    // BORRAR TODO
+    // WIPE
     $btnWipe.addEventListener("click", () => {
       if(!confirm("¿Seguro que querés borrar TODOS los productos?")) return;
       localStorage.removeItem(STORAGE_KEY);
