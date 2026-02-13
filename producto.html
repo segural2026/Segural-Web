@@ -41,12 +41,9 @@
       display:grid;place-items:center;min-height:320px;position:relative;
     }
     .mainImg img{width:100%;height:100%;object-fit:cover}
-
     .offer-pill{
-      position:absolute;top:12px;left:12px;
-      background:var(--offerBg);color:var(--offer);
-      border:1px solid rgba(181,71,8,.25);
-      font-weight:900;padding:8px 10px;border-radius:999px;
+      position:absolute;top:12px;left:12px;background:var(--offerBg);color:var(--offer);
+      border:1px solid rgba(181,71,8,.25);font-weight:900;padding:8px 10px;border-radius:999px;
     }
 
     .thumbs{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
@@ -120,20 +117,54 @@
   </main>
 
   <script>
-    const WHATSAPP_NUMBER = "5491155034755";
+    // ====== STORAGE (con migración automática) ======
     const STORAGE_KEY = "segural_products_v3";
+    const LEGACY_KEYS = ["segural_products_v2", "segural_products_v1"];
+
+    function safeParse(raw){
+      try { return raw ? JSON.parse(raw) : []; } catch { return []; }
+    }
+
+    function uid(){
+      if (crypto && crypto.randomUUID) return crypto.randomUUID();
+      return String(Date.now()) + Math.random().toString(16).slice(2);
+    }
+
+    function normalizeProduct(obj){
+      const imagenes = Array.isArray(obj.imagenes) ? obj.imagenes : (obj.imagen ? [obj.imagen] : []);
+      return {
+        id: obj.id || uid(),
+        nombre: String(obj.nombre || "").trim(),
+        categoria: String(obj.categoria || "Otros"),
+        precio: (obj.precio === "" || obj.precio === null || obj.precio === undefined) ? "" : Number(obj.precio),
+        descripcion: String(obj.descripcion || ""),
+        imagenes: imagenes.filter(Boolean),
+        oferta: !!obj.oferta,
+        createdAt: obj.createdAt || Date.now()
+      };
+    }
+
+    function loadAllProducts(){
+      const v3 = safeParse(localStorage.getItem(STORAGE_KEY));
+      if (Array.isArray(v3) && v3.length) return v3;
+
+      for (const k of LEGACY_KEYS){
+        const legacy = safeParse(localStorage.getItem(k));
+        if (Array.isArray(legacy) && legacy.length){
+          const migrated = legacy.map(normalizeProduct).filter(p => p.nombre);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+          return migrated;
+        }
+      }
+      return [];
+    }
+
+    // ====== Page logic ======
+    const WHATSAPP_NUMBER = "5491155034755";
 
     function moneyARS(value){
       const n = Number(value || 0);
       return n.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
-    }
-
-    function loadProducts(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      }catch(e){ return []; }
     }
 
     function getId(){
@@ -154,7 +185,7 @@
     }
 
     const id = getId();
-    const all = loadProducts();
+    const all = loadAllProducts();
     const p = all.find(x => String(x.id) === String(id));
 
     const $box = document.getElementById("box");
@@ -170,7 +201,6 @@
       document.getElementById("desc").textContent = p.descripcion || "Sin descripción.";
 
       const imgs = getImages(p);
-
       const main = document.getElementById("mainImg");
       const thumbs = document.getElementById("thumbs");
 
@@ -180,15 +210,12 @@
           main.textContent = "Sin imagen";
           return;
         }
-
-        // Oferta pill
         if(p.oferta){
           const pill = document.createElement("div");
           pill.className = "offer-pill";
           pill.textContent = "OFERTA";
           main.appendChild(pill);
         }
-
         const img = document.createElement("img");
         img.src = src;
         img.alt = p.nombre || "Producto";
@@ -196,7 +223,6 @@
       }
 
       setMain(imgs[0] || "");
-
       thumbs.innerHTML = "";
       imgs.forEach((src) => {
         const t = document.createElement("div");
