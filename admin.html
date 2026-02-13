@@ -62,10 +62,7 @@
     .item .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
 
     .thumbs{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
-    .thumbs img{
-      width:72px;height:54px;object-fit:cover;border-radius:12px;border:1px solid var(--line);
-      background:var(--muted);
-    }
+    .thumbs img{width:72px;height:54px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--muted)}
 
     .note{
       margin-top:14px;padding:14px 16px;border-radius:16px;background:var(--muted);
@@ -75,14 +72,12 @@
     /* MODAL */
     .modal-backdrop{
       position:fixed;inset:0;background:rgba(16,24,40,.55);
-      display:none;align-items:center;justify-content:center;z-index:99999;
-      padding:16px;
+      display:none;align-items:center;justify-content:center;z-index:99999;padding:16px;
     }
     .modal{
       width:min(920px, 100%);
       background:#fff;border-radius:18px;box-shadow:var(--shadow);
-      border:1px solid rgba(255,255,255,.20);
-      overflow:hidden;
+      border:1px solid rgba(255,255,255,.20);overflow:hidden;
     }
     .modal-head{
       padding:14px 16px;border-bottom:1px solid var(--line);
@@ -91,9 +86,7 @@
     }
     .modal-head h2{margin:0;font-size:18px}
     .modal-body{padding:16px}
-    .grid{
-      display:grid;grid-template-columns:repeat(12,1fr);gap:12px;
-    }
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
     .field{grid-column:span 6}
     .field.full{grid-column:span 12}
     label{display:block;font-weight:900;font-size:13px;margin:0 0 6px}
@@ -113,40 +106,28 @@
       width:86px;height:64px;border-radius:12px;border:1px dashed var(--line);
       display:grid;place-items:center;color:var(--sub);font-weight:900;background:#fff;
     }
-    .gimg{
-      position:relative;
-      width:86px;height:64px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff;
-    }
+    .gimg{position:relative;width:86px;height:64px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
     .gimg img{width:100%;height:100%;object-fit:cover}
     .gimg button{
-      position:absolute;top:6px;right:6px;
-      width:26px;height:26px;border-radius:999px;border:none;
+      position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:999px;border:none;
       background:rgba(180,35,24,.92);color:#fff;font-weight:900;cursor:pointer;
     }
 
     .modal-foot{
       padding:14px 16px;border-top:1px solid var(--line);
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-      background:#fff;
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;background:#fff;
     }
-
     .file-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .file-row input[type="file"]{padding:10px}
-
     .toggle{
-      display:flex;align-items:center;gap:10px;
-      padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;
-      box-shadow:0 6px 16px rgba(16,24,40,.05);
+      display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);
+      border-radius:14px;background:#fff;box-shadow:0 6px 16px rgba(16,24,40,.05);
     }
     .toggle input{width:18px;height:18px}
     .toggle span{font-weight:900;color:#344054}
 
     .hidden{display:none !important}
-
-    @media (max-width:860px){
-      .item{grid-column:span 12}
-      .field{grid-column:span 12}
-    }
+    @media (max-width:860px){.item{grid-column:span 12}.field{grid-column:span 12}}
   </style>
 </head>
 
@@ -259,8 +240,53 @@
   </div>
 
   <script>
+    // ====== STORAGE (con migración automática) ======
     const STORAGE_KEY = "segural_products_v3";
+    const LEGACY_KEYS = ["segural_products_v2", "segural_products_v1"];
 
+    function safeParse(raw){
+      try { return raw ? JSON.parse(raw) : []; } catch { return []; }
+    }
+
+    function uid(){
+      if (crypto && crypto.randomUUID) return crypto.randomUUID();
+      return String(Date.now()) + Math.random().toString(16).slice(2);
+    }
+
+    function normalizeProduct(obj){
+      const imagenes = Array.isArray(obj.imagenes) ? obj.imagenes : (obj.imagen ? [obj.imagen] : []);
+      return {
+        id: obj.id || uid(),
+        nombre: String(obj.nombre || "").trim(),
+        categoria: String(obj.categoria || "Otros"),
+        precio: (obj.precio === "" || obj.precio === null || obj.precio === undefined) ? "" : Number(obj.precio),
+        descripcion: String(obj.descripcion || ""),
+        imagenes: imagenes.filter(Boolean),
+        oferta: !!obj.oferta,
+        createdAt: obj.createdAt || Date.now()
+      };
+    }
+
+    function loadAllProducts(){
+      const v3 = safeParse(localStorage.getItem(STORAGE_KEY));
+      if (Array.isArray(v3) && v3.length) return v3;
+
+      for (const k of LEGACY_KEYS){
+        const legacy = safeParse(localStorage.getItem(k));
+        if (Array.isArray(legacy) && legacy.length){
+          const migrated = legacy.map(normalizeProduct).filter(p => p.nombre);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+          return migrated;
+        }
+      }
+      return [];
+    }
+
+    function saveAllProducts(arr){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    // ====== UI refs ======
     const $list = document.getElementById("list");
 
     const $btnOpenModal = document.getElementById("btnOpenModal");
@@ -287,28 +313,11 @@
     const $btnSave = document.getElementById("btnSave");
 
     let editId = null;
-    let images = []; // dataURLs
-
-    function uid(){
-      if (crypto && crypto.randomUUID) return crypto.randomUUID();
-      return String(Date.now()) + Math.random().toString(16).slice(2);
-    }
+    let images = [];
 
     function moneyARS(value){
       const n = Number(value || 0);
       return n.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
-    }
-
-    function load(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      }catch(e){ return []; }
-    }
-
-    function save(arr){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
     }
 
     function openModal(mode){
@@ -398,38 +407,15 @@
       $imgFiles.value = "";
     });
 
-    $btnOpenModal.addEventListener("click", () => {
-      resetForm();
-      openModal("add");
-    });
-
+    $btnOpenModal.addEventListener("click", () => { resetForm(); openModal("add"); });
     $btnCloseModal.addEventListener("click", closeModal);
     $btnCancel.addEventListener("click", closeModal);
 
-    $modalBackdrop.addEventListener("click", (e) => {
-      if(e.target === $modalBackdrop) closeModal();
-    });
-
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape" && $modalBackdrop.style.display === "flex") closeModal();
-    });
-
-    function normalizeProduct(obj){
-      const imagenes = Array.isArray(obj.imagenes) ? obj.imagenes : (obj.imagen ? [obj.imagen] : []);
-      return {
-        id: obj.id || uid(),
-        nombre: String(obj.nombre || "").trim(),
-        categoria: String(obj.categoria || "Otros"),
-        precio: obj.precio === "" || obj.precio === null || obj.precio === undefined ? "" : Number(obj.precio),
-        descripcion: String(obj.descripcion || ""),
-        imagenes: imagenes.filter(Boolean),
-        oferta: !!obj.oferta,
-        createdAt: obj.createdAt || Date.now()
-      };
-    }
+    $modalBackdrop.addEventListener("click", (e) => { if(e.target === $modalBackdrop) closeModal(); });
+    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && $modalBackdrop.style.display === "flex") closeModal(); });
 
     function renderList(){
-      const arr = load();
+      const arr = loadAllProducts();
       $list.innerHTML = "";
 
       if(!arr.length){
@@ -522,8 +508,8 @@
         btnDel.textContent = "Eliminar";
         btnDel.onclick = () => {
           if(!confirm("¿Eliminar este producto?")) return;
-          const next = load().filter(x => x.id !== p.id);
-          save(next);
+          const next = loadAllProducts().filter(x => x.id !== p.id);
+          saveAllProducts(next);
           renderList();
         };
 
@@ -540,29 +526,27 @@
 
     $btnSave.addEventListener("click", () => {
       const nombre = ($nombre.value || "").trim();
-      if(!nombre){
-        alert("Poné un nombre de producto.");
-        $nombre.focus();
-        return;
-      }
+      if(!nombre){ alert("Poné un nombre de producto."); $nombre.focus(); return; }
 
       const categoria = $categoria.value;
       const precioRaw = ($precio.value || "").trim();
       const descripcion = ($descripcion.value || "").trim();
       const oferta = !!$oferta.checked;
 
+      const current = loadAllProducts();
+      const old = editId ? current.find(x => x.id === editId) : null;
+
       const payload = normalizeProduct({
         id: editId || uid(),
-        nombre,
-        categoria,
+        nombre, categoria,
         precio: precioRaw ? Number(precioRaw) : "",
         descripcion,
         imagenes: images,
         oferta,
-        createdAt: editId ? (load().find(x=>x.id===editId)?.createdAt || Date.now()) : Date.now()
+        createdAt: old?.createdAt || Date.now()
       });
 
-      let arr = load();
+      let arr = loadAllProducts();
 
       if(editId){
         const idx = arr.findIndex(x => x.id === editId);
@@ -571,28 +555,24 @@
         arr.unshift(payload);
       }
 
-      save(arr);
+      saveAllProducts(arr);
       renderList();
       closeModal();
     });
 
-    // EXPORT
     $btnExport.addEventListener("click", () => {
-      const arr = load();
+      const arr = loadAllProducts();
       const data = { app:"Segural", version:3, exportedAt:new Date().toISOString(), products:arr };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = `segural-productos-backup-${new Date().toISOString().slice(0,10)}.json`;
       document.body.appendChild(a);
-      a.click();
-      a.remove();
+      a.click(); a.remove();
       URL.revokeObjectURL(url);
     });
 
-    // IMPORT
     $btnImport.addEventListener("click", () => $importFile.click());
 
     $importFile.addEventListener("change", async () => {
@@ -603,18 +583,15 @@
         const text = await file.text();
         const parsed = JSON.parse(text);
         const incoming = Array.isArray(parsed) ? parsed : (parsed.products || []);
-        if(!Array.isArray(incoming)){
-          alert("Archivo inválido. No se encontró lista de productos.");
-          return;
-        }
+        if(!Array.isArray(incoming)){ alert("Archivo inválido."); return; }
 
         const normalized = incoming.map(normalizeProduct).filter(p => p.nombre);
 
-        const current = load();
+        const current = loadAllProducts();
         const map = new Map(current.map(p => [p.id, p]));
         for(const p of normalized) map.set(p.id, p);
 
-        save(Array.from(map.values()));
+        saveAllProducts(Array.from(map.values()));
         renderList();
         alert("Importación completada ✅");
       }catch(e){
@@ -624,7 +601,6 @@
       }
     });
 
-    // WIPE
     $btnWipe.addEventListener("click", () => {
       if(!confirm("¿Seguro que querés borrar TODOS los productos?")) return;
       localStorage.removeItem(STORAGE_KEY);
